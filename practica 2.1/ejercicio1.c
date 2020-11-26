@@ -13,6 +13,6 @@ int main (int argc, char **argv){
 		printf("Error is...",strerror(sid));
 		return -1;
 	}
-	printf("No errors");
+	printf("No errors \n");
 	return 0;
 }
