@@ -4,7 +4,7 @@
 #include<errno.h>
 #include<sys/time.h>
 
-int main(int argv, char **argc){
+int main(int argc, char **argv){
 
 	time_t t = time(NULL);
 	struct tm *tm = localtime(&t);
