@@ -16,8 +16,8 @@ int main( int argc, char **argv) {
 		return -1;
 	}
 	
-	char* ln = malloc((strlen(*(argv )) + 1) * sizeof(char));
-	char* sym = malloc((strlen(*(argv )) + 1) * sizeof(char));
+	char* ln = malloc((strlen(argv[1]) * sizeof(char));
+	char* sym = malloc((strlen(argv[1]) * sizeof(char));
 
 	strcpy (ln,argv[1]);
 	strcpy (sym,argv[1]);
@@ -25,12 +25,17 @@ int main( int argc, char **argv) {
 	ln = strcat(ln,".hard");
 	sym = strcat(sym,".sym");
 
+	
 	switch(sb.st_mode & S_IFMT) {
-		case S_IFLNK:  
-			link(argv[1],ln);          
+
+		case S_IFLNK: 
+			symlink(argv[1],sym); 
 		break;
-		case S_IFREG:  
-			symlink(argv[1],sym);       
+		case S_IFREG: 
+			link(argv[1],ln);  
+		break;
+		default:
+			printf("Es otro tipo de archivo \n");
 		break;
 	}
 
