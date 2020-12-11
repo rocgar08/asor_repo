@@ -8,43 +8,28 @@
 
 int main(int argc, char **argv){
 
-	struct flock l;
-	l.l_type = F_RDLCK;
-	l.l_whence = SEEK_SET;
-	l.l_start= 0;
-	l.l_len = 0;
-	l.l_pid = getpid();
-
 	char buf[200];
 	time_t t = time(NULL);
-        struct tm *tmp = localtime(&t);
+    struct tm *tmp = localtime(&t);
 
-	
 	int fd = open(argv[1],O_CREAT|O_TRUNC|O_RDWR, 0666);
 
-	int status = fcntl(fd,F_GETLK,&l);
+	int rc = lockf(fd, F_TLOCK, 0);
 	
-	if(l.l_type == F_UNLCK )
+	if(rc == -1 )
 	{
-		
-		l.l_type = F_WRLCK;
-		l.l_whence = SEEK_CUR;
-		l.l_start = 0;
-		l.l_len = 0;
-		l.l_pid = getpid();
+	   perror("lockf");
+	   return 0;
 		
 	}
 
-        else
-	{
-		printf("Implementando el cerrojo de escritura...\n");
-		strftime(buf,sizeof(char)*200,"%H:%M",tmp);
-		sleep(3);
-		return 1;
-	}
-
+	printf("Implementando el cerrojo de escritura...\n");
+	strftime(buf,sizeof(char)*200,"%H:%M",tmp);
+	sleep(3);
+	
 	printf("Se ha activado el cerrojo de escritura\n");
 	printf("En el buffer hay: %s\n",buf);
+	lockf(fd, F_ULOCK, 0);
 	close(fd);
 
 	return 0;
