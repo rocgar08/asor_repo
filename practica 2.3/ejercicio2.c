@@ -21,7 +21,8 @@ int main(int argc, char **argv){
 	}
 
 	sched_getparam(getpid(),&param);
-	
+	printf("prio :%i\n",param.sched_priority);
+
 	int max = sched_get_priority_max(options);
 	int min = sched_get_priority_min(options);
 
