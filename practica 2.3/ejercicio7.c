@@ -9,7 +9,7 @@ int main( int argc, char **argv){
 	Solo con system, ya que con execvp se crea una imagen de 	proceso y sustituye lo que haya debajo de el por el comando que ha sido insertado */
 	
 	execvp(argv[1],argv +1);
-	//system(argv[1] + 1);
+	//system(argv[1]);
 	printf("El comando terminó de ejecutarse \n");   
 	return 0;
 }
