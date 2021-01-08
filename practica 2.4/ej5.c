@@ -18,20 +18,13 @@ int maxi(a,b){
 
 int main(int argc, char **argv){
 	
-	char* W= "W";
-	char* R= "R";
-
 	char buf[256];
-	
-	mkfifo(W,0777);
-	mkfifo(R,0777);
 
-	int fdW = open(W,O_NONBLOCK);
-	int fdR = open(R,O_NONBLOCK);
+	int fdW = open("./tubW",O_RDWR);
+	int fdR = open("./tubR",O_RDWR);
 
 	while(1){
-		
-		printf("EStoy en el bucle \n");
+		printf("Estoy en el bucle \n");
 
 		fd_set rfds;
 		FD_ZERO(&rfds);
@@ -39,68 +32,53 @@ int main(int argc, char **argv){
 		FD_SET(fdR,&rfds);
 		
 		printf("Estoy haciendo el select \n");
-		
-		int sel = select(maxi(fdW,fdR)+1,&rfds,NULL,NULL,NULL);
-		
+		select(maxi(fdW,fdR)+1,&rfds,NULL,NULL,NULL);
 
-		if(sel==-1){	
-			printf("El select no devuelve lo que deve \n");
-			return -1;
-			
-		}
-		
 		printf("Ya he hecho el select \n");
 	
-		int tubActual;//para el descriptor de fichero de la tuberia actual
-		int idActual; //Para saber cual es el identificador de cada una RD = 0 y WD=1
+		int *tubActual;//para el descriptor de fichero de la tuberia actual
+		char *idActual; //Para saber cual es el identificador
 		
 		printf("Estoy haciendo las comprobaciones del FD_ISSET \n");
 		
-
 		if(FD_ISSET(fdW,&rfds)){
-			tubActual =fdW;
-			idActual = WR;
+			tubActual = &fdW;
+			idActual = "tubW";
+		}
+	
+		else if(FD_ISSET(fdR,&rfds)){
+			tubActual =&fdR;
+			idActual = "tubR";
 		}
 		else{
-			printf("Error FD_ISSET(fdW,&rfds) \n");
-			return -1;
-		}
-
-		if(FD_ISSET(fdR,&rfds)){
-			tubActual =fdR;
-			idActual = RD;
-		}
-		else{
-			printf("Error FD_ISSET(fdR,&rfds) \n");
+			printf("Error en el select \n");
 			return -1;
 		}
 		
-		printf("EStoy empezando a leer \n");
+		printf("Estoy empezando a leer \n");
 
-		size_t rc = read(tubActual,buf,255);
+		size_t rc = read(*tubActual,buf,255);
 
 		if(rc == -1){
 			printf("Hay problemas al realizar la lectura correspondiente de la turbería actual% s\n", buf);
+			return -1;
 
 		}
 		//Indicando el fin de fichero, por lo que hay que cerrar la tubería y volver a abrirla
 		else if(rc == 0){
-			close(tubActual);
-			read(tubActual,buf,sizeof(char)*255);
+			close(*tubActual);
+			*tubActual = open(idActual,O_RDWR); //TAmbién se puede poner el flag RD_ONLY|NON_BLOCK
 		}
 
 		else{
+
 			buf[rc] = '\0';
-			printf("Tuberia: %i Datos: %s\n", idActual,buf);
-			close(fdW);
-			close(fdR);
+			printf("Tuberia: %i Datos: %s\n", *idActual,buf);
 		}
-		
-		
 	}
 	
-	
-
+	close(fdW);
+	close(fdR);
 	return 0;
 		
 }
