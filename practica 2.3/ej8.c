@@ -29,7 +29,7 @@ int main( int argc, char **argv){
 		//aprendiz de yedai
 		case 0:
 				printf("[H] %i [P] %i [(group: %i) (sesion : %i)] \n", getpid(),
-				        getppid(), getpgid(pid), getsid(pid));
+				        getppid(), getpgid(pid), getsid(getpid()));
 				/*
 				La salida estándar al fichero /tmp/daemon.out.
 				La salida de error estándar al fichero /tmp/daemon.err.
@@ -50,8 +50,7 @@ int main( int argc, char **argv){
 		default: 
 			wait(status);
 			printf("[P] %i [H] %i [(group: %i) (sesion : %i)] \n", 
-				getpid(), pid, getpgid(pid), getsid(pid));
-			execvp(argv[1],argv +1);
+				getpid(), pid, getpgid(pid), getsid(getpid()));
 		break;
 	}
 
