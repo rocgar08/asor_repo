@@ -6,7 +6,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <time.h>
-#define BUF_SIZE 500
+#define BUF_SIZE 80
 
 int main(int argc, char *argv[]) {
 
@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
 
 	freeaddrinfo(result);           
 	
-	listen(sfd,15);
+	listen(sfd,15); //Añadir listen
 	
 	while (1) {
 		
@@ -46,10 +46,11 @@ int main(int argc, char *argv[]) {
 		
 		printf("Conexión desde Host: %s Puerto:%s\n",host,service);
 
-		while(rc = recv(clisd,buf,BUF_SIZE,0)){
+		while(rc = recv(clisd,buf,79,0)){ //Tanto recv como send van con clisd
 			printf("recibiendo \n");
 			buf[rc]='\n';
 			printf("\t mensaje :%s\n",buf);
+			send(clisd, buf, BUF_SIZE, 0);
 
 		}
 		printf("saliendo ...\n");
