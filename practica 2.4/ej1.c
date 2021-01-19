@@ -46,7 +46,7 @@ int main(int argc, char **argv){
 				printf("Error dup2(fd[1],0) \n");
 			}
 			close(pipefd[1]);
-			execlp(argv[1],argv[2],argv[2],NULL);
+			execlp(argv[1],argv[1],argv[2],NULL);
 		break;
 	}
 	return 0;
