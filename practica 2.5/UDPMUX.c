@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
 			printf("Año: %s\n",bufS);
 		}
 		if(FD_ISSET(0,&set)){
-			nread = read(sfd, buf,79);
+			nread = read(0, buf,79);
 		  	buf[nread] = '\0';
 			printf("DATOS 	%s\n", buf);
 			if(nread == -1){
