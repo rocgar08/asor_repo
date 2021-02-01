@@ -12,7 +12,7 @@ int main(int argc, char **argv){
 	struct addrinfo hints;
 	struct addrinfo *rp;
 	struct sockaddr_storage peer_addr;
-        socklen_t peer_addr_len;
+    socklen_t peer_addr_len;
 
 	ssize_t nread;
 	char buf[BUF_SIZE];
@@ -44,15 +44,17 @@ int main(int argc, char **argv){
 
 	while(1){
 		peer_addr_len = sizeof(struct sockaddr_storage);
-		//argv[3] se refiere al comando t,d o q en el server bufc[2]
-		sendto(sfd,argv[3],2, 0,(struct sockaddr *) 		                &peer_addr,peer_addr_len);
-		recvfrom(sfd, buf,79, 0,(struct sockaddr *)&peer_addr, &peer_addr_len);
-		buf[BUF_SIZE] = '\0';
+		ssize_t nread1= read(0,buf,BUF_SIZE-1);
+		buf[nread1]='\0';
+		s = getnameinfo((struct sockaddr *) &peer_addr,peer_addr_len, host,NI_MAXHOST,service, NI_MAXSERV, NI_NUMERICSERV|NI_NUMERICHOST);
+		if(sendto(sfd,buf,sizeof(buf), 0,rp->ai_addr, rp->ai_addrlen)!=sizeof(buf))
+				fprintf(stderr,"Error sending response\n")
+		
+		recvfrom(sfd, buf,BUF_SIZE, 0,(struct sockaddr *) &peer_addr, &peer_addr_len);
 		printf("Datos: %s\n",buf);
 	}
 	close(sfd);
 	return 0;
-	
  }
 
 
